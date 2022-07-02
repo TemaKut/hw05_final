@@ -145,7 +145,6 @@ def profile_follow(request, username):
     """ Подписаться на автора. """
     follower = User.objects.get(username=request.user)
     author = get_object_or_404(User, username=username)
-    not_in_author = Follow.objects.filter(author=author)
     y_n = Follow.objects.filter(user=follower, author=author)
 
     if follower != author and len(y_n) == 0:
