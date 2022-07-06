@@ -6,7 +6,11 @@
   <div class="container py-5">
     <h2>Последние обновления на сайте</h2>
     {% for post in page_obj %}
-     {% include 'posts/includes/post_info.html' %} 
+     {% include 'posts/includes/post_info.html' %}
+     
+      {% if not forloop.last %}
+      <hr />
+      {% endif %}
     {% endfor %}
   </div>
 </main>
