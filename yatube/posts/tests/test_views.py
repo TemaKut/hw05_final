@@ -93,7 +93,8 @@ class TestPostViews(TestCase):
                          reverse(self.group_post,
                                  kwargs={'slug': self.group.slug}):
                          'posts/group_list.html',
-                         reverse(self.profile, kwargs={'username': self.author.username}):
+                         reverse(self.profile,
+                                 kwargs={'username': self.author.username}):
                          'posts/profile.html',
                          reverse(self.post_id,
                                  kwargs={'post_id': self.post.pk}):
@@ -189,7 +190,8 @@ class TestPostViews(TestCase):
                      self.client.get(reverse(
                          self.group_post, kwargs={'slug': 'test_slug'})),
                      self.client.get(reverse(
-                         self.profile, kwargs={'username': self.author.username})))
+                         self.profile,
+                         kwargs={'username': self.author.username})))
         for response in responses:
             with self.subTest(response=response):
                 self.assertEqual(response.context['page_obj'].paginator.count,
@@ -226,7 +228,8 @@ class TestPostViews(TestCase):
                          kwargs={'slug': 'test_slug'}) + '?page=2'),
                      self.client.get(reverse(
                          self.profile,
-                         kwargs={'username': self.author.username}) + '?page=2'))
+                         kwargs={'username': self.author.username}) +
+                         '?page=2'))
 
         for response in responses:
             with self.subTest(response=response):
@@ -264,7 +267,8 @@ class TestPostViews(TestCase):
         user = User.objects.get(username='test_user')
         follow_count_1 = Follow.objects.filter(user=user).count()
         self.authorized_client.get(
-            reverse('posts:profile_follow', kwargs={'username': self.author.username}))
+            reverse('posts:profile_follow',
+                    kwargs={'username': self.author.username}))
         follow_count_2 = Follow.objects.filter(user=user).count()
         self.assertEqual(follow_count_1 + 1, follow_count_2)
 
@@ -272,17 +276,20 @@ class TestPostViews(TestCase):
         """ Может ли авторизованный пользователь отписываться. """
         user = User.objects.get(username='test_user')
         self.authorized_client.get(
-            reverse('posts:profile_follow', kwargs={'username': self.author.username}))
+            reverse('posts:profile_follow',
+                    kwargs={'username': self.author.username}))
         follow_count_1 = Follow.objects.filter(user=user).count()
         self.authorized_client.get(
-            reverse('posts:profile_unfollow', kwargs={'username': self.author.username}))
+            reverse('posts:profile_unfollow',
+                    kwargs={'username': self.author.username}))
         follow_count_2 = Follow.objects.filter(user=user).count()
         self.assertEqual(follow_count_1 - 1, follow_count_2)
 
     def test_work_profile_follower(self):
         """ Тестируем попадает ли пост в ленту подписавшихся. """
         self.follower.get(
-            reverse('posts:profile_follow', kwargs={'username': self.author.username}))
+            reverse('posts:profile_follow',
+                    kwargs={'username': self.author.username}))
         response = self.follower.get(reverse('posts:follow_index'))
         count_obj_bef = len(response.context['page_obj'].object_list)
         post_create = Post.objects.create(
@@ -317,7 +324,7 @@ class TestPostViews(TestCase):
         response = self.authorized_client.get(
             reverse('posts:post_detail', kwargs={'post_id': self.post.id}))
         count_comment_bef = len(response.context['comments'])
-        comment = Comment.objects.create(
+        Comment.objects.create(
             post=self.post,
             author=self.user,
             text='Test Comment authorized_client',
@@ -330,7 +337,7 @@ class TestPostViews(TestCase):
         response = self.client.get(
             reverse('posts:post_detail', kwargs={'post_id': self.post.id}))
         count_comment_bef = len(response.context['comments'])
-        comment = Comment.objects.create(
+        Comment.objects.create(
             post=self.post,
             author=self.user,
             text='Test Comment authorized_client 2',

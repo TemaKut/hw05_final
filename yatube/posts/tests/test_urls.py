@@ -48,7 +48,8 @@ class GuestURLTest(TestCase):
         url_status = {
             reverse(self.index): HTTPStatus.OK,
             reverse(self.group_post, kwargs={'slug': 'test'}): HTTPStatus.OK,
-            reverse(self.profile, kwargs={'username': self.user.username}): HTTPStatus.OK,
+            reverse(self.profile,
+                    kwargs={'username': self.user.username}): HTTPStatus.OK,
             reverse(self.post_id, kwargs={'post_id': '1'}): HTTPStatus.OK,
         }
         for url, status in url_status.items():
@@ -71,7 +72,8 @@ class GuestURLTest(TestCase):
         url_status = {
             reverse(self.create): HTTPStatus.OK,
             reverse(self.edit, kwargs={'post_id': '1'}): HTTPStatus.OK,
-            reverse(self.add_comment, kwargs={'post_id': '1'}): HTTPStatus.FOUND,
+            reverse(self.add_comment,
+                    kwargs={'post_id': '1'}): HTTPStatus.FOUND,
         }
         for url, status in url_status.items():
             with self.subTest(url=url):
@@ -88,7 +90,8 @@ class GuestURLTest(TestCase):
         """Недоступность для не автора (Переадресация)."""
         resp = self.not_author.get(reverse(self.edit, kwargs={'post_id': '1'}))
         self.assertRedirects(
-            resp, reverse(self.post_id, kwargs={'post_id': '1'}), HTTPStatus.FOUND)
+            resp, reverse(self.post_id,
+                          kwargs={'post_id': '1'}), HTTPStatus.FOUND)
 
     def test_post_edit_by_guest(self):
         """Не доступность posts/<int:post_id>/edit/
@@ -103,13 +106,18 @@ class GuestURLTest(TestCase):
 
     def test_accordance_urls_and_templates(self):
         """Проврка на соответствие урл и шаблонов"""
+        temp_pos = 'posts/profile.html'
         url_templates_names = {
             reverse(self.index): 'posts/index.html',
-            reverse(self.group_post, kwargs={'slug': 'test'}): 'posts/group_list.html',
-            reverse(self.profile, kwargs={'username': self.user.username}): 'posts/profile.html',
-            reverse(self.post_id, kwargs={'post_id': '1'}): 'posts/post_detail.html',
+            reverse(self.group_post,
+                    kwargs={'slug': 'test'}): 'posts/group_list.html',
+            reverse(self.profile,
+                    kwargs={'username': self.user.username}): temp_pos,
+            reverse(self.post_id,
+                    kwargs={'post_id': '1'}): 'posts/post_detail.html',
             reverse(self.create): 'posts/create_post.html',
-            reverse(self.edit, kwargs={'post_id': '1'}): 'posts/create_post.html',
+            reverse(self.edit,
+                    kwargs={'post_id': '1'}): 'posts/create_post.html',
         }
         for address, template in url_templates_names.items():
             with self.subTest(address=address):

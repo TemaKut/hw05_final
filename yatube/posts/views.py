@@ -130,7 +130,6 @@ def add_comment(request, post_id):
 @login_required
 def follow_index(request):
     """ Страница с постами интересных пользователей. """
-    authors = Follow.objects.filter(user=request.user).values('author')
     posts = Post.objects.select_related(
         'author', 'group').filter(author__following__user=request.user)
 
