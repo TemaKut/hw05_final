@@ -228,8 +228,8 @@ class TestPostViews(TestCase):
                          kwargs={'slug': 'test_slug'}) + '?page=2'),
                      self.client.get(reverse(
                          self.profile,
-                         kwargs={'username': self.author.username}) +
-                         '?page=2'))
+                         kwargs={'username': self.author.username})
+                         + '?page=2'))
 
         for response in responses:
             with self.subTest(response=response):
