@@ -2,6 +2,7 @@ from django.contrib.auth import get_user_model
 from django.test import TestCase
 
 from ..models import Group, Post
+from ..constants import POST_NUM
 
 User = get_user_model()
 
@@ -30,7 +31,7 @@ class PostModelTest(TestCase):
         group = PostModelTest.group
         group_title = group.title
         fields_str = {
-            'а' * 15: str(post),
+            self.post.text[:POST_NUM]: str(post),
             group_title: str(group),
         }
         for field, str_ in fields_str.items():

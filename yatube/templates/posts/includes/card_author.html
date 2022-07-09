@@ -1,9 +1,7 @@
-{% with request.resolver_match.view_name as view_name %}
-
-  {% if view_name == 'posts:post_detail' %}
+    {% if post_valid.pub_date %}
     <ul class="list-group list-group-flush">
       <li class="list-group-item">Дата публикации: {{ post_valid.pub_date }}</li>
-
+    {% endif %}
       {% if post_valid.group %}
         <li class="list-group-item">
           Группа: {{ post_valid.group.title }}
@@ -11,30 +9,21 @@
         </li>
       {% endif %}
 
-      <li class="list-group-item">Автор: {{ post_valid.author.get_full_name }}</li>
+      <li class="list-group-item">Автор: {{ post_detail.username }}</li>
       <li class="list-group-item d-flex justify-content-between align-items-center">
         Всего постов автора:
-        <span>{{ post_valid.author.posts.count }}</span>
+        <span>{{ post_detail.posts.count }}</span>
       </li>
       <li class="list-group-item d-flex justify-content-between align-items-center">
         Автор подписан на:
-        <span>{{ post_valid.author.follower.count }}</span>
+        <span>{{ post_detail.follower.count }}</span>
       </li>
       <li class="list-group-item d-flex justify-content-between align-items-center">
         На автора подписано:
-        <span>{{ post_valid.author.following.count }}</span>
+        <span>{{ post_detail.following.count }}</span>
       </li>
       <li class="list-group-item">
-        <a href="{% url 'posts:profile'  post_valid.author.username %}">Все посты пользователя</a>
+        <a href="{% url 'posts:profile'  post_detail.username %}">Все посты пользователя</a>
       </li>
     </ul>
-  {% endif %}
-  
-  {% if view_name == 'posts:profile' %}
-  <h2>Все посты пользователя {{ author.username }}</h2>
-  <h4>Всего постов: {{ author.posts.count }}.</h4>
-  <h4>Автор подписан на: {{ author.follower.count }} человек.</h4>
-  <h4>На автора подписано: {{ author.following.count }} человек.</h4>
-  {% endif %}
 
-{% endwith %}

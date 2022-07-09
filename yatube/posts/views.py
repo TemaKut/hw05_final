@@ -5,7 +5,7 @@ from django.views.decorators.cache import cache_page
 
 from .models import Post, Group, User, Follow
 from .forms import PostForm, CommentForm
-from .utils import _help_paginator
+from .utils import help_paginator
 
 
 def _get_post_objects():
@@ -20,7 +20,7 @@ def index(request):
     """Вывод главной страницы с постами."""
     posts = _get_post_objects()
     context = {
-        'page_obj': _help_paginator(request, posts),
+        'page_obj': help_paginator(request, posts),
     }
 
     return render(request, "posts/index.html", context)
@@ -33,7 +33,7 @@ def group_posts(request, slug):
 
     context_group = {
         'group': group,
-        'page_obj': _help_paginator(request, posts),
+        'page_obj': help_paginator(request, posts),
     }
 
     return render(request, "posts/group_list.html", context_group)
@@ -48,7 +48,7 @@ def profile(request, username):
 
     context_profile = {
         'author': user,
-        'page_obj': _help_paginator(request, posts),
+        'page_obj': help_paginator(request, posts),
         'following': following,
     }
 
@@ -134,7 +134,7 @@ def follow_index(request):
         'author', 'group').filter(author__following__user=request.user)
 
     context = {
-        'page_obj': _help_paginator(request, posts),
+        'page_obj': help_paginator(request, posts),
     }
 
     return render(request, 'posts/follow.html', context)
@@ -153,8 +153,6 @@ def profile_follow(request, username):
             author=author,
         )
 
-        return redirect('posts:follow_index')
-
     return redirect('posts:follow_index')
 
 
@@ -163,4 +161,5 @@ def profile_unfollow(request, username):
     """ Отписаться от автора. """
     author = get_object_or_404(User, username=username)
     Follow.objects.filter(user=request.user, author=author).delete()
+
     return redirect('posts:follow_index')

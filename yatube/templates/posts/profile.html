@@ -4,7 +4,7 @@
 {% block content %}
 <main>
   <div class=class="mb-5">
-    {% include 'posts/includes/card_author.html' %}
+    {% include 'posts/includes/card_author.html' with post_detail=author %}
     
     {% if request.user != author %}
       {% if following %}

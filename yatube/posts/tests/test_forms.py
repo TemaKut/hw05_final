@@ -66,7 +66,7 @@ class TestFormEfficiency(TestCase):
         self.assertRedirects(response, reverse(
             'posts:profile', kwargs={'username': self.user.username}))
         self.assertEqual(Post.objects.count(), post_count + 1)
-        object_post = Post.objects.reverse().get(id=1)
+        object_post = Post.objects.reverse().first()
         text = object_post.text
         group = object_post.group
         author = object_post.author.username
@@ -79,7 +79,7 @@ class TestFormEfficiency(TestCase):
     def test_post_edit_by_author(self):
         """Происходит ли изменение поста
         авторизованным автором в базе данных."""
-        Post.objects.create(
+        post = Post.objects.create(
             text="Test text 1",
             author=self.user,
         )
@@ -103,12 +103,12 @@ class TestFormEfficiency(TestCase):
             'image': uploaded,
         }
         response = self.authorized_client.post(
-            reverse('posts:post_edit', args=('1',)),
+            reverse('posts:post_edit', args=(str(post.id))),
             data=form_data,
             follow=True,
         )
         self.assertRedirects(response, reverse(
-            'posts:post_detail', args=('1',)))
+            'posts:post_detail', args=(str(post.id))))
         self.assertEqual(Post.objects.count(), post_count)
         object_post = Post.objects.get(id=1)
         text = object_post.text

@@ -1,17 +1,16 @@
 {% extends 'base.html' %}
-{% block title %}Главная страница сайта YaTube{% endblock %}
+{% block title %}Главная страница сайта YaTube{%endblock %} 
 {% block content %}
-{% include 'posts/includes/switcher.html' %}
+
 <main>
+  {% include 'posts/includes/switcher.html' %}
   <div class="container py-5">
     <h2>Последние обновления на сайте</h2>
-    {% for post in page_obj %}
-     {% include 'posts/includes/post_info.html' %}
-     
-      {% if not forloop.last %}
-      <hr />
-      {% endif %}
-    {% endfor %}
+    {% for post in page_obj %} {% include 'posts/includes/post_info.html' %} 
+    {%if not forloop.last %}
+    <hr />
+    {% endif %} {% endfor %}
   </div>
 </main>
-{% include 'posts/includes/paginator.html' %} {% endblock %}
+{% include 'posts/includes/paginator.html' %} 
+{% endblock %}
