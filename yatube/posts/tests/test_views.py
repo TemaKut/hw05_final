@@ -330,7 +330,7 @@ class TestPostViews(TestCase):
         form_data = {
             'text': 'Test Text',
         }
-        response = self.authorized_client.post(
+        self.authorized_client.post(
             reverse(self.P_POST_DETAIL, kwargs={'post_id': self.post.id}),
             data=form_data,
             follow=True,
@@ -345,7 +345,7 @@ class TestPostViews(TestCase):
         form_data = {
             'text': 'Test Text',
         }
-        response = self.client.post(
+        self.client.post(
             reverse(self.P_POST_DETAIL, kwargs={'post_id': self.post.id}),
             data=form_data,
             follow=True,

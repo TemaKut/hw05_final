@@ -48,10 +48,12 @@ class GuestURLTest(TestCase):
         """Проврка общей доступности url для гостевого пользователя."""
         url_status = {
             reverse(self.P_HOME): HTTPStatus.OK,
-            reverse(self.P_GROUP, kwargs={'slug': self.group.slug}): HTTPStatus.OK,
+            reverse(self.P_GROUP,
+                    kwargs={'slug': self.group.slug}): HTTPStatus.OK,
             reverse(self.P_PROFILE,
                     kwargs={'username': self.user.username}): HTTPStatus.OK,
-            reverse(self.P_POST_DETAIL, kwargs={'post_id': self.post.id}): HTTPStatus.OK,
+            reverse(self.P_POST_DETAIL,
+                    kwargs={'post_id': self.post.id}): HTTPStatus.OK,
         }
         for url, status in url_status.items():
             with self.subTest(url=url):
@@ -73,7 +75,8 @@ class GuestURLTest(TestCase):
         """Проврка доступности url для авторизованного пользователя."""
         url_status = {
             reverse(self.P_CREATE): HTTPStatus.OK,
-            reverse(self.P_POST_EDIT, kwargs={'post_id': self.post.id}): HTTPStatus.OK,
+            reverse(self.P_POST_EDIT,
+                    kwargs={'post_id': self.post.id}): HTTPStatus.OK,
         }
         for url, status in url_status.items():
             with self.subTest(url=url):
@@ -83,8 +86,9 @@ class GuestURLTest(TestCase):
     def test_redirect_comment_autorized(self):
         """ Проверяем редирект со страницы добавления комментариев
         для авторизованного пользователя. """
-        response = self.autorized_user.get(reverse(self.P_ADD_COMMENT,
-                                                   kwargs={'post_id': self.post.id}))
+        response = self.autorized_user.get(
+            reverse(self.P_ADD_COMMENT,
+                    kwargs={'post_id': self.post.id}))
         self.assertEqual(response.status_code, HTTPStatus.FOUND)
 
     def test_create_edit_unavailability_by_guest(self):
@@ -110,7 +114,8 @@ class GuestURLTest(TestCase):
         response = self.user_not_author.get(
             reverse(self.P_POST_EDIT, kwargs={'post_id': self.post.id}))
         self.assertRedirects(response, reverse(
-            self.P_POST_DETAIL, kwargs={'post_id': self.post.id}), HTTPStatus.FOUND)
+            self.P_POST_DETAIL,
+            kwargs={'post_id': self.post.id}), HTTPStatus.FOUND)
 
     def test_accordance_urls_and_templates(self):
         """Проврка на соответствие урл и шаблонов"""
@@ -122,10 +127,10 @@ class GuestURLTest(TestCase):
             reverse(self.P_PROFILE,
                     kwargs={'username': self.user.username}): temp_pos,
             reverse(self.P_POST_DETAIL,
-                    kwargs={'post_id': self.post.id}): 'posts/post_detail.html',
+                    args=(str(self.post.id))): 'posts/post_detail.html',
             reverse(self.P_CREATE): 'posts/create_post.html',
             reverse(self.P_POST_EDIT,
-                    kwargs={'post_id': self.post.id}): 'posts/create_post.html',
+                    args=(str(self.post.id))): 'posts/create_post.html',
         }
         for address, template in url_templates_names.items():
             with self.subTest(address=address):
