@@ -61,6 +61,7 @@ class TestPostViews(TestCase):
         cls.P_PROFILE_FOLLOW = 'posts:profile_follow'
         cls.P_PROFILE_UNFOLLOW = 'posts:profile_unfollow'
         cls.P_FOLLOW_INDEX = 'posts:follow_index'
+        cls.P_ADD_COMMENT = 'posts:add_comment'
 
     @classmethod
     def tearDownClass(cls):
@@ -135,6 +136,7 @@ class TestPostViews(TestCase):
         author = response.context['author']
         self.assertEqual(author, self.author)
         following = response.context['following']
+        self.assertIsInstance(following, bool)
         self.assertEqual(following, False)
 
     def test_post_detail_context(self):
@@ -326,29 +328,33 @@ class TestPostViews(TestCase):
         """ Проверяем может ли авторизованный пользователь
         оставлять комментарии. """
         post = Post.objects.get(id=self.post.id)
-        count_comment_bef = post.comments.count()
+        count_comment_bef = Comment.objects.filter(post=post).count()
         form_data = {
             'text': 'Test Text',
         }
         self.authorized_client.post(
-            reverse(self.P_POST_DETAIL, kwargs={'post_id': self.post.id}),
+            reverse(self.P_ADD_COMMENT, kwargs={'post_id': self.post.id}),
             data=form_data,
             follow=True,
         )
-        count_comment_after = post.comments.count()
-        self.assertEqual(count_comment_bef, count_comment_after)
+        count_comment_after = Comment.objects.filter(post=post).count()
+        response = self.authorized_client.get(
+            reverse(self.P_POST_DETAIL, kwargs={'post_id': self.post.id}))
+        comments_context = response.context['comments'][0]
+        self.assertEqual(form_data['text'], comments_context.text)
+        self.assertEqual(count_comment_bef + 1, count_comment_after)
 
     def test_comment_guest_user(self):
         """ Тестируем невозможность оставлять комментарии гостем. """
         post = Post.objects.get(id=self.post.id)
-        count_comment_bef = post.comments.count()
+        count_comment_bef = Comment.objects.filter(post=post).count()
         form_data = {
             'text': 'Test Text',
         }
         self.client.post(
-            reverse(self.P_POST_DETAIL, kwargs={'post_id': self.post.id}),
+            reverse(self.P_ADD_COMMENT, kwargs={'post_id': self.post.id}),
             data=form_data,
             follow=True,
         )
-        count_comment_after = post.comments.count()
+        count_comment_after = Comment.objects.filter(post=post).count()
         self.assertEqual(count_comment_bef, count_comment_after)

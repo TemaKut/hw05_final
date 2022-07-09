@@ -1,29 +1,31 @@
-    {% if post_valid.pub_date %}
+{% with request.resolver_match.view_name as view_name %}
+  {% if view_name != 'posts:profile' %}
     <ul class="list-group list-group-flush">
       <li class="list-group-item">Дата публикации: {{ post_valid.pub_date }}</li>
-    {% endif %}
+
       {% if post_valid.group %}
         <li class="list-group-item">
           Группа: {{ post_valid.group.title }}
           <a href="{% url 'posts:group' post_valid.group.slug %}">Все записи группы</a>
         </li>
       {% endif %}
-
-      <li class="list-group-item">Автор: {{ post_detail.username }}</li>
+  {% endif %}
+{% endwith %}
+      <li class="list-group-item">Автор: {{ post_user.username }}</li>
       <li class="list-group-item d-flex justify-content-between align-items-center">
         Всего постов автора:
-        <span>{{ post_detail.posts.count }}</span>
+        <span>{{ post_user.posts.count }}</span>
       </li>
       <li class="list-group-item d-flex justify-content-between align-items-center">
         Автор подписан на:
-        <span>{{ post_detail.follower.count }}</span>
+        <span>{{ post_user.follower.count }}</span>
       </li>
       <li class="list-group-item d-flex justify-content-between align-items-center">
         На автора подписано:
-        <span>{{ post_detail.following.count }}</span>
+        <span>{{ post_user.following.count }}</span>
       </li>
       <li class="list-group-item">
-        <a href="{% url 'posts:profile'  post_detail.username %}">Все посты пользователя</a>
+        <a href="{% url 'posts:profile'  post_user.username %}">Все посты пользователя</a>
       </li>
     </ul>
 

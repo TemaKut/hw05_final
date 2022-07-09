@@ -30,6 +30,10 @@ class TestFormEfficiency(TestCase):
             slug="TestSlug",
             description="Test description",
         )
+        cls.P_POST_DETAIL = 'posts:post_detail'
+        cls.P_PROFILE = 'posts:profile'
+        cls.P_POST_EDIT = 'posts:post_edit'
+        cls.P_CREATE = 'posts:post_create'
 
     @classmethod
     def tearDownClass(cls):
@@ -59,12 +63,12 @@ class TestFormEfficiency(TestCase):
             'image': uploaded,
         }
         response = self.authorized_client.post(
-            reverse('posts:post_create'),
+            reverse(self.P_CREATE),
             data=form_data,
             follow=True,
         )
         self.assertRedirects(response, reverse(
-            'posts:profile', kwargs={'username': self.user.username}))
+            self.P_PROFILE, kwargs={'username': self.user.username}))
         self.assertEqual(Post.objects.count(), post_count + 1)
         object_post = Post.objects.reverse().first()
         text = object_post.text
@@ -103,14 +107,14 @@ class TestFormEfficiency(TestCase):
             'image': uploaded,
         }
         response = self.authorized_client.post(
-            reverse('posts:post_edit', args=(str(post.id))),
+            reverse(self.P_POST_EDIT, args=(str(post.id))),
             data=form_data,
             follow=True,
         )
         self.assertRedirects(response, reverse(
-            'posts:post_detail', args=(str(post.id))))
+            self.P_POST_DETAIL, args=(str(post.id))))
         self.assertEqual(Post.objects.count(), post_count)
-        object_post = Post.objects.get(id=1)
+        object_post = Post.objects.get(id=str(post.id))
         text = object_post.text
         group = object_post.group
         author = object_post.author.username
