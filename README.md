@@ -1,3 +1,11 @@
-# hw05_final
+# Project Yatube
 
-[![CI](https://github.com/yandex-praktikum/hw05_final/actions/workflows/python-app.yml/badge.svg?branch=master)](https://github.com/yandex-praktikum/hw05_final/actions/workflows/python-app.yml)
+Проект меего первого блога, созданного во время 
+обучения на курсе Yandex Practicum
+
+
+
+## Authors
+
+- [Kutuzov Artem](https://github.com/TemaKut)
+

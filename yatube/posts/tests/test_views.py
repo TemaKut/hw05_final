@@ -340,8 +340,9 @@ class TestPostViews(TestCase):
         count_comment_after = Comment.objects.filter(post=post).count()
         response = self.authorized_client.get(
             reverse(self.P_POST_DETAIL, kwargs={'post_id': self.post.id}))
-        comments_context = response.context['comments'][0]
-        self.assertEqual(form_data['text'], comments_context.text)
+        comment_new = Comment.objects.get(
+            post=post, text=form_data['text'])
+        self.assertEqual(form_data['text'], comment_new.text)
         self.assertEqual(count_comment_bef + 1, count_comment_after)
 
     def test_comment_guest_user(self):
